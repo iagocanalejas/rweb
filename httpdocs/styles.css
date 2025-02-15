@@ -1,0 +1,86 @@
+html {
+    --gap: 20px;
+    --panel-width: 350px;
+    --header-height: 55px;
+
+    /* Parte de la paleta de Tailwind */
+    /* Véase https://tailwindcss.com/docs/customizing-colors */
+    --color-neutral-50: #fafafa;
+    --color-neutral-100: #f5f5f5;
+    --color-neutral-200: #e5e5e5;
+    --color-neutral-300: #d4d4d4;
+    --color-neutral-400: #a3a3a3;
+    --color-neutral-500: #737373;
+    --color-neutral-600: #525252;
+    --color-neutral-700: #404040;
+    --color-neutral-800: #262626;
+    --color-neutral-900: #171717;
+    --color-yellow-500: #eab308;
+    --color-red-600: #dc2626;
+
+    margin: 0 var(--gap);
+    font-family: "Inter", sans-serif;
+    font-weight: 300;
+    background: var(--color-neutral-900);
+    color: var(--color-neutral-200);
+    scroll-behavior: smooth;
+    user-select: none;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    z-index: 1;
+    box-sizing: border-box;
+    align-items: center;
+    border-bottom: 1px solid var(--color-neutral-800);
+    box-shadow: 0 5px 5px #1c191750;
+    background-color: #171717f0;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+@media (max-width: 1536px) {
+}
+
+@media (max-width: 1280px) {
+    html {
+        --gap: 16px;
+    }
+
+    header rs-logo {
+        display: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    html {
+        --gap: 14px;
+        --panel-width: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        --panel-width: 100%;
+        --header-height: 50px;
+    }
+}
+
+@media (max-width: 640px) {
+    html {
+        --header-height: 45px;
+    }
+}
