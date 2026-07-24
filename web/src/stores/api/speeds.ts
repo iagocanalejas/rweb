@@ -13,6 +13,18 @@ async function getAverageSpeeds(leagueId: number, gender: string, category: stri
   return await safeFetch<Record<number, number[]>>(f, 'Failed to fetch data', {})
 }
 
+async function getAverageSpeedsByClub(clubId: number, gender: string, category: string, ignoreOutliers: boolean) {
+  const query = new URLSearchParams({
+    club: clubId.toString(),
+    gender,
+    category,
+    only_league_races: 'true',
+    normalize: ignoreOutliers.toString(),
+  })
+  const f = fetch(`${BASE_URL}/speeds/averages?${query}`, { method: 'GET' })
+  return await safeFetch<Record<number, number[]>>(f, 'Failed to fetch data', {})
+}
+
 async function getNthSpeeds(
   index: number,
   leagueId: number,
@@ -33,6 +45,7 @@ async function getNthSpeeds(
 
 const SpeedsService = {
   getAverageSpeeds,
+  getAverageSpeedsByClub,
   getNthSpeeds,
 }
 export default SpeedsService

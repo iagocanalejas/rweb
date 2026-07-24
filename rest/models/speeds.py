@@ -5,6 +5,8 @@ from dataclasses import dataclass, field
 from psycopg2.extensions import connection as Connection
 from psycopg2.extras import RealDictCursor
 
+from models._utils import DatabaseQueryError
+
 logger = logging.getLogger("rweb")
 
 
@@ -22,7 +24,7 @@ class GetYearSpeedsByParams:
     normalize: bool = False
 
 
-async def get_year_speeds_filtered(
+def get_year_speeds_filtered(
     db: Connection,
     params: GetYearSpeedsByParams,
 ) -> dict[int, list[float]]:
@@ -80,7 +82,8 @@ async def get_year_speeds_filtered(
             cursor.execute(raw_query)
             rows = cursor.fetchall()
         except Exception as e:
-            raise AssertionError(f"failed to execute query={raw_query}") from e
+            logger.exception("Failed executing query on participants table.")
+            raise DatabaseQueryError("Error fetching year speeds") from e
 
         for row in rows:
             speeds[row["year"]] = row["speeds"]
@@ -88,7 +91,7 @@ async def get_year_speeds_filtered(
     return speeds
 
 
-async def get_nth_speed_filtered(
+def get_nth_speed_filtered(
     db: Connection,
     index: int,
     params: GetYearSpeedsByParams,
@@ -142,7 +145,8 @@ async def get_nth_speed_filtered(
             cursor.execute(raw_query)
             rows = cursor.fetchall()
         except Exception as e:
-            raise AssertionError(f"failed to execute query={raw_query}") from e
+            logger.exception("Failed executing query on participants table.")
+            raise DatabaseQueryError(f"Error fetching {index=} speeds") from e
 
         for row in rows:
             speeds[row["year"]].append(row["speed"])

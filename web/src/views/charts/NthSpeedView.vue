@@ -6,6 +6,7 @@
         <div class="relative">
           <select
             id="number-select"
+            v-if="maxParticipants > 1"
             v-model="selectedPosition"
             class="appearance-none rounded-lg border border-slate-700/50 bg-slate-800 py-2 pl-4 pr-10 text-sm text-slate-200 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
           >

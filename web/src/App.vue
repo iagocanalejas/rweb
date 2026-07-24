@@ -4,9 +4,23 @@
       <!-- <img src="@/assets/logo.png" alt="Logo" class="h-10 w-10" /> -->
       <span class="text-xl font-semibold text-white hidden md:block">TStats</span>
     </RouterLink>
-    <div>
-      <LeaguePicker />
-    </div>
+    <nav class="flex items-center space-x-1 sm:space-x-2">
+      <RouterLink
+        :to="'/' + RouteName.ByLeague"
+        class="px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700/70 transition-all duration-150 focus:outline-none"
+        active-class="bg-gray-900 text-white font-semibold"
+      >
+        Ligas
+      </RouterLink>
+
+      <RouterLink
+        :to="'/' + RouteName.ByClub"
+        class="px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700/70 transition-all duration-150 focus:outline-none"
+        active-class="bg-gray-900 text-white font-semibold"
+      >
+        Clubs
+      </RouterLink>
+    </nav>
   </header>
   <LoadingBarComponent v-if="isLoading" />
   <RouterView />
@@ -25,7 +39,7 @@
 import { storeToRefs } from 'pinia'
 import { useLoadingStore } from './stores/loading'
 import LoadingBarComponent from './components/LoadingBarComponent.vue'
-import LeaguePicker from './components/LeaguePicker.vue'
+import { RouteName } from './router'
 
 const { isLoading } = storeToRefs(useLoadingStore())
 </script>

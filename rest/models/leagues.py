@@ -5,6 +5,8 @@ from typing import Any, Self
 from psycopg2.extensions import connection as Connection
 from psycopg2.extras import RealDictCursor, RealDictRow
 
+from models._utils import DatabaseQueryError
+
 logger = logging.getLogger("rweb")
 
 
@@ -56,7 +58,8 @@ async def get_leagues(db: Connection) -> list[dict[str, Any]]:
             cursor.execute(raw_query)
             rows = cursor.fetchall()
         except Exception as e:
-            raise AssertionError(f"failed to execute query={raw_query}") from e
+            logger.exception("Failed executing query on league table.")
+            raise DatabaseQueryError("Error fetching leagues") from e
 
         leagues = [League.from_row(row).to_dict() for row in rows]
 
@@ -96,7 +99,8 @@ async def get_yearly_league_participants(db: Connection) -> dict[int, dict[int, 
             cursor.execute(raw_query)
             rows = cursor.fetchall()
         except Exception as e:
-            raise AssertionError(f"failed to execute query={raw_query}") from e
+            logger.exception("Failed executing query on league table.")
+            raise DatabaseQueryError("Error fetching league participants") from e
 
         yearly_league_participants = {}
         for row in rows:

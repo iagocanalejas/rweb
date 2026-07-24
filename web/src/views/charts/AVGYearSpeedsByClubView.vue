@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="my-6">
+  <div v-if="selectedClub?.id">
+    <div class="my-6 flex flex-col items-center justify-end gap-4 sm:flex-row">
       <NormalizationSwitchComponent @change="ignoreOutliers = $event" />
     </div>
 
@@ -15,6 +15,28 @@
       </div>
     </div>
   </div>
+
+  <div
+    v-else
+    class="my-6 flex min-h-[380px] w-full flex-col items-center justify-center rounded-xl border border-dashed border-slate-800 bg-slate-900/60 p-8 text-center shadow-xl backdrop-blur-sm"
+  >
+    <div
+      class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20"
+    >
+      <svg class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+        />
+      </svg>
+    </div>
+    <h3 class="text-lg font-semibold text-slate-200">Sin club seleccionado</h3>
+    <p class="mt-1.5 max-w-sm text-sm text-slate-400">
+      Utiliza el buscador de arriba para seleccionar un club y consultar sus estadísticas y tendencias de velocidad
+      anuales.
+    </p>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -23,14 +45,14 @@ import { Chart, registerables, type ChartConfiguration } from 'chart.js'
 import { storeToRefs } from 'pinia'
 import { useSpeedsStore } from '@/stores/speeds'
 import { BoxAndWiskers, BoxPlotController } from '@sgratzl/chartjs-chart-boxplot'
-import { useLeaguesStore } from '@/stores/leagues'
 import NormalizationSwitchComponent from '@/components/NormalizationSwitchComponent.vue'
+import { useClubsStore } from '@/stores/clubs'
 
 Chart.register(...registerables, BoxPlotController, BoxAndWiskers)
 
 const speedsStore = useSpeedsStore()
 const { yearAverages } = storeToRefs(speedsStore)
-const { selectedLeague } = storeToRefs(useLeaguesStore())
+const { selectedClub, selectedGender, selectedCategory } = storeToRefs(useClubsStore())
 
 const minSpeed = computed(() => Math.floor(Math.min(...Object.values(yearAverages.value).flat())))
 const maxSpeed = computed(() => Math.ceil(Math.max(...Object.values(yearAverages.value).flat())))
@@ -49,11 +71,18 @@ onMounted(async () => {
   renderChart()
 })
 watch(yearAverages, () => renderChart(), { deep: true })
-watch(selectedLeague, async () => await loadData(), { deep: true })
+watch(selectedClub, async () => await loadData(), { deep: true })
+watch(selectedGender, async () => await loadData(), { deep: true })
+watch(selectedCategory, async () => await loadData(), { deep: true })
 watch(ignoreOutliers, async () => await loadData(), { deep: true })
 
 async function loadData() {
-  await speedsStore.fetchYearAverages(selectedLeague.value, ignoreOutliers.value)
+  await speedsStore.fetchYearAveragesByClub(
+    selectedClub.value,
+    selectedGender.value,
+    selectedCategory.value,
+    ignoreOutliers.value,
+  )
 }
 
 function renderChart() {

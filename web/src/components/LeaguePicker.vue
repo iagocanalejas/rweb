@@ -32,7 +32,7 @@
 import type { League } from '@/stores/api/leagues'
 import { useLeaguesStore } from '@/stores/leagues'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const { leagues, selectedLeague } = storeToRefs(useLeaguesStore())
 
@@ -40,8 +40,22 @@ const isDropdownOpen = ref(false)
 
 const dropdown = ref<HTMLElement | null>(null)
 
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
 function select(item: League) {
   isDropdownOpen.value = false
   selectedLeague.value = item
+}
+
+function handleClickOutside(event: MouseEvent) {
+  if (dropdown.value && !dropdown.value.contains(event.target as Node)) {
+    isDropdownOpen.value = false
+  }
 }
 </script>

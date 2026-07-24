@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import SpeedsService from './api/speeds'
 import type { League } from './api/leagues'
+import type { Club } from './api/clubs'
 
 export const useSpeedsStore = defineStore('speeds', () => {
   const yearAverages = ref<Record<number, number[]>>({})
@@ -9,6 +10,10 @@ export const useSpeedsStore = defineStore('speeds', () => {
 
   async function fetchYearAverages(league: League, ignoreOutliers: boolean) {
     yearAverages.value = await SpeedsService.getAverageSpeeds(league.id, league.gender, league.category, ignoreOutliers)
+  }
+
+  async function fetchYearAveragesByClub(club: Club, gender: string, category: string, ignoreOutliers: boolean) {
+    yearAverages.value = await SpeedsService.getAverageSpeedsByClub(club.id, gender, category, ignoreOutliers)
   }
 
   async function fetchNthSpeeds(index: number, league: League, ignoreOutliers: boolean) {
@@ -21,5 +26,5 @@ export const useSpeedsStore = defineStore('speeds', () => {
     )
   }
 
-  return { yearAverages, fetchYearAverages, yearNthSpeeds, fetchNthSpeeds }
+  return { yearAverages, fetchYearAverages, fetchYearAveragesByClub, yearNthSpeeds, fetchNthSpeeds }
 })

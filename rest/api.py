@@ -4,11 +4,12 @@ from db import get_db
 from fastapi import Depends, FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from models.leagues import get_leagues
-from routers import speeds
+from routers import clubs, speeds
 
 app = FastAPI()
 
 app.include_router(speeds.router, prefix="/speeds", tags=["stats"])
+app.include_router(clubs.router, prefix="/clubs", tags=["clubs"])
 
 cors_origins = [""]
 if os.getenv("DEBUG", False) == "True":
